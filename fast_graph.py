@@ -24,6 +24,7 @@ Key patches 2025‑05‑21
 """
 
 import os, time, warnings, numpy as np, pandas as pd, torch, mne
+import subprocess
 from itertools import combinations
 from pathlib import Path
 from tqdm import tqdm
@@ -41,6 +42,50 @@ from torch.amp import autocast, GradScaler
 # ---------------- 0.  HOUSE‑KEEPING -------------------------
 scaler = GradScaler("cuda")
 
+def get_gpu_with_most_memory():
+    """Returns the index of the GPU with the most available memory using nvidia-smi."""
+    if not torch.cuda.is_available():
+        return 'cpu'
+    
+    print("\nGPU Memory Information:")
+    print("-" * 50)
+    
+    # Get nvidia-smi output
+    try:
+        nvidia_smi_output = subprocess.check_output(
+            ['nvidia-smi', '--query-gpu=index,memory.total,memory.used,memory.free', 
+             '--format=csv,noheader,nounits']
+        ).decode('utf-8')
+    except subprocess.CalledProcessError:
+        print("Error: Could not execute nvidia-smi. Falling back to CPU.")
+        return 'cpu'
+    
+    gpu_memory = []
+    for line in nvidia_smi_output.strip().split('\n'):
+        try:
+            idx, total, used, free = map(int, line.split(', '))
+            percentage = (used / total) * 100
+            
+            print(f"GPU {idx}:")
+            print(f"  Total Memory: {total / 1024:.1f} GB")
+            print(f"  Used:         {used / 1024:.1f} GB")
+            print(f"  Free:         {free / 1024:.1f} GB")
+            print(f"  Usage:        {percentage:.1f}%")
+            print("-" * 50)
+            
+            gpu_memory.append(free)
+        except (ValueError, IndexError) as e:
+            print(f"Error parsing GPU {idx} information")
+            gpu_memory.append(0)
+    
+    if not gpu_memory or max(gpu_memory) == 0:
+        print("\nNo available GPUs found. Falling back to CPU.")
+        return 'cpu'
+    
+    selected_gpu = gpu_memory.index(max(gpu_memory))
+    print(f"\nSelected GPU {selected_gpu} with {gpu_memory[selected_gpu] / 1024:.1f} GB free memory")
+    return f'cuda:{selected_gpu}'
+
 os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "max_split_size_mb:128,expandable_segments:True"
 torch.backends.cudnn.benchmark = True
 
@@ -54,7 +99,7 @@ Z_DIM        = 16
 NODE_DIM     = 3
 HID_DIM      = 8
 LAYERS       = 3
-DEVICE       = 'cuda' if torch.cuda.is_available() else 'cpu'
+DEVICE       = get_gpu_with_most_memory()
 
 print(f"Training on {DEVICE}")
 
@@ -125,28 +170,48 @@ class EZGNN(torch.nn.Module):
         )
 
     # ---- helper: edge embedding in chunks ------------------
-    def _compute_edge_attr(self, signals, edge_index):
-        E = edge_index.size(1)
-        N = signals.size(0)
+    # def _compute_edge_attr(self, signals, edge_index):
+    #     E = edge_index.size(1)
+    #     N = signals.size(0) # (N,T)
         
-        # Compute all edge differences at once
-        diff = signals[edge_index[0]] - signals[edge_index[1]]  # (E,T)
+    #     # Compute all edge differences at once
+    #     diff = signals[edge_index[0]] - signals[edge_index[1]]  # (E,T)
         
-        # Unfold all windows at once
-        win = diff.unfold(-1, WIN_LEN, STRIDE)  # (E,W,L)
-        B, W, L = win.shape
+    #     # Unfold all windows at once
+    #     win = diff.unfold(-1, WIN_LEN, STRIDE)  # (E,W,L) ie edges x windows x window length
+    #     B, W, L = win.shape
         
-        # Reshape for temporal encoder
-        win_reshaped = win.reshape(-1, 1, L).contiguous()  # (E*W,1,L)
+    #     # Reshape for temporal encoder
+    #     win_reshaped = win.reshape(-1, 1, L).contiguous()  # (E*W,1,L)
         
-        # Process all windows through temporal encoder
-        z_win = self.temporal(win_reshaped)  # (E*W,Z_DIM)
-        z_win = z_win.view(B, W, Z_DIM)  # (E,W,Z_DIM)
+    #     # Process all windows through temporal encoder
+    #     z_win = self.temporal(win_reshaped)  # (E*W,Z_DIM)
+    #     z_win = z_win.view(B, W, Z_DIM)  # (E,W,Z_DIM)
         
-        # Apply attention pooling
-        z_edge = self.tpool(z_win)  # (E,Z_DIM)
+    #     # Apply attention pooling
+    #     z_edge = self.tpool(z_win)  # (E,Z_DIM)
         
-        return z_edge  # (E,Z_DIM)
+    #     return z_edge  # (E,Z_DIM)
+
+    # preform temporal encoding on raw signals and compute edge differences in feature space
+    # convolution is linear Conv(s_i−s_j)=Conv(s_i)−Conv(s_j). We have relu after each conv however
+    # so it is not linear but maybe it approximates it well enough to reduce the
+    # number of computations for the temporal encoding.
+    def _compute_edge_attr(self, signals, edge_index): 
+        # 1) Node‐wise windows & encode
+        node_win = signals.unfold(-1, WIN_LEN, STRIDE)       # (N, W, L)
+        B, W, L = node_win.shape
+        node_win = node_win.reshape(-1, 1, L).contiguous()   # (N*W,1,L)
+        z_node = self.temporal(node_win)                     # (N*W, Z)
+        z_node = z_node.view(B, W, Z_DIM)                    # (N, W, Z)
+
+        # 2) Edge differences in feature space
+        src, dst = edge_index
+        z_edge_win = z_node[src] - z_node[dst]               # (E, W, Z)
+
+        # 3) Attention pooling
+        return self.tpool(z_edge_win)                        # (E, Z)
+
 
     # ---- forward -------------------------------------------
     def forward(self, data):
@@ -207,8 +272,9 @@ def build_patient_graph(pid: int, edf_dir: str, contact_csv: str):
     # ---- edges (directed complete) -------------------------
     N = x_node.size(0)
     pairs = list(combinations(range(N), 2))
-    src, dst = zip(*pairs)
-    edge_idx = torch.tensor(np.vstack([src+dst, dst+src]), dtype=torch.long)
+    src, dst = zip(*pairs)  
+    # edge_idx = torch.tensor(np.vstack([src+dst, dst+src]), dtype=torch.long) # both directions
+    edge_idx = torch.tensor(np.vstack([src, dst]), dtype=torch.long) # only upper; (2,E)
 
     # ---- labels -------------------------------------------
     y_node = torch.tensor(valid.soz.values, dtype=torch.float32)
@@ -279,7 +345,7 @@ def train_epoch(model, loader, opt, loss_fn, epoch):
     batch_losses = []
     
     for batch_idx, g in enumerate(pbar):
-        if torch.cuda.is_available(): torch.cuda.empty_cache()
+        # if torch.cuda.is_available(): torch.cuda.empty_cache()
         g = g.to(DEVICE)
         opt.zero_grad(set_to_none=True)
 
@@ -428,6 +494,9 @@ def eval_epoch(model, loader, epoch, prefix=""):
 
 # ---------------- 10. MAIN ---------------------------------
 if __name__ == '__main__':
+    os.environ["WANDB_MODE"] = "disabled"
+
+
     # Set random seeds for reproducibility
     RANDOM_SEED = 42
     torch.manual_seed(RANDOM_SEED)
@@ -443,20 +512,9 @@ if __name__ == '__main__':
     EDF_DIR  = '/home/wendeldr/data/IEEG/baseline_edfs/'
     CSV_PATH = 'contact_info.csv'
     
-    # Read unique patient IDs from CSV
-    contact_df = pd.read_csv(CSV_PATH)
-    ALL_PATIENTS = sorted(contact_df['pid'].unique().tolist())
-    
-    # Create train/val/test split (60/20/20)
-    np.random.seed(RANDOM_SEED)
-    np.random.shuffle(ALL_PATIENTS)
-    n = len(ALL_PATIENTS)
-    train_size = int(0.6 * n)
-    val_size = int(0.2 * n)
-    
-    TRAIN_P = ALL_PATIENTS[:train_size]
-    VAL_P = ALL_PATIENTS[train_size:train_size + val_size]
-    TEST_P = ALL_PATIENTS[train_size + val_size:]
+    TRAIN_P = [100]
+    VAL_P = [60]
+    TEST_P = [35]
 
     # Initialize wandb
     wandb.init(
@@ -488,7 +546,7 @@ if __name__ == '__main__':
     val_ds = EZDataset(VAL_P, EDF_DIR, CSV_PATH)
     test_ds = EZDataset(TEST_P, EDF_DIR, CSV_PATH)
     
-    train_loader = DataLoader(train_ds, batch_size=1, shuffle=True)
+    train_loader = DataLoader(train_ds, batch_size=2, shuffle=True)
     val_loader = DataLoader(val_ds, batch_size=1, shuffle=False)
     test_loader = DataLoader(test_ds, batch_size=1, shuffle=False)
 
@@ -518,24 +576,24 @@ if __name__ == '__main__':
     early_stopping_patience = 6
     early_stopping_counter = 0
     
-    for epoch in range(1, 4):
+    for epoch in range(1, 100):
         print(f"\nEpoch {epoch}/200")
         train_loss = train_epoch(model, train_loader, optim, loss_fn, epoch)
         
         # Step the scheduler after training
         scheduler.step()
 
-        if epoch == 1 or epoch % 3 == 0:
+        if epoch == 1 or epoch % 50 == 0:
             # Validation
             val_auroc, val_f1 = eval_epoch(model, val_loader, epoch, prefix="val")
             
             # Test (only log metrics, don't use for early stopping)
-            test_auroc, test_f1 = eval_epoch(model, test_loader, epoch, prefix="test")
+            # test_auroc, test_f1 = eval_epoch(model, test_loader, epoch, prefix="test")
             
             print(f"\nEpoch {epoch} Results:")
             print(f"Train Loss: {train_loss:.4f}")
             print(f"Val AUROC: {val_auroc:.3f} | Val F1: {val_f1:.3f}")
-            print(f"Test AUROC: {test_auroc:.3f} | Test F1: {test_f1:.3f}")
+            # print(f"Test AUROC: {test_auroc:.3f} | Test F1: {test_f1:.3f}")
             print(f"Learning Rate: {scheduler.get_last_lr()[0]:.2e}")
             
             # Early stopping logic based on validation F1
