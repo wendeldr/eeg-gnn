@@ -5,6 +5,8 @@ import torch.nn as nn
 import os
 from sklearn.metrics import roc_curve, roc_auc_score, precision_recall_fscore_support, confusion_matrix, average_precision_score
 import matplotlib.pyplot as plt
+import random
+from sklearn.metrics import roc_auc_score
 
 from tqdm import tqdm
 from torch_geometric.data import Data
@@ -99,10 +101,10 @@ class NodeClassifierGNN(nn.Module):
 
     def forward(self, data):
         x, edge_index, edge_attr = data.x, data.edge_index, data.edge_attr
-        for conv, do in zip(self.convs, self.dropouts):
+        for conv, dropout in zip(self.convs, self.dropouts):
             x = conv(x, edge_index, edge_attr)
             x = torch.relu(x)
-            x = do(x)
+            x = dropout(x)
         out = self.lin(x).squeeze(-1)           # (num_nodes,)
         return out                              # raw logits
 
@@ -126,10 +128,10 @@ else:
     print("Processed and saved graphs.")
 
 # Filter to only patients with ilae == 1
-filtered_graphs = [g for g in graphs if g.ilae.item() == 1]
+filtered_graphs = [g for g in graphs if g.ilae.item() >= 1]
+# filtered_graphs = graphs
 
 # Shuffle and split 80/20
-import random
 random.seed(42)
 random.shuffle(filtered_graphs)
 split_idx = int(0.8 * len(filtered_graphs))
@@ -143,7 +145,7 @@ loader = DataLoader(train_graphs, batch_size=4, shuffle=True)   # batch graphs
 
 device   = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 model    = NodeClassifierGNN(edge_in_dim=len(targets), hidden=32, n_layers=2, dropout=0.2).to(device)
-optimizer = torch.optim.Adam(model.parameters(), lr=3e-4, weight_decay=1e-3)  # increased weight decay
+optimizer = torch.optim.Adam(model.parameters(), lr=3e-4, weight_decay=1e-3)
 criterion = nn.BCEWithLogitsLoss()
 
 
@@ -164,18 +166,33 @@ for epoch in range(1, num_epochs + 1):
         total_loss += loss.item() * data.num_graphs
     print(f"Epoch {epoch:03d} | loss {total_loss/len(loader):.4f}")
 
-    # Early stopping: check test AUC
-    _, _, test_auc = evaluate_graphs(test_graphs, model, device, set_name="Test (EarlyStop)")
-    if test_auc is not None and test_auc > best_auc:
-        best_auc = test_auc
-        epochs_no_improve = 0
-        # Optionally save best model
-        torch.save(model.state_dict(), 'best_model.pt')
+    # Early stopping: evaluate on test set every epoch
+    model.eval()
+    all_probs = []
+    all_labels = []
+    with torch.no_grad():
+        for data in test_graphs:
+            data = data.to(device)
+            probs = torch.sigmoid(model(data)).cpu().numpy()
+            labels = data.y.cpu().numpy()
+            mask = labels >= 0
+            all_probs.append(probs[mask])
+            all_labels.append(labels[mask])
+    all_probs = np.concatenate(all_probs)
+    all_labels = np.concatenate(all_labels)
+    if len(np.unique(all_labels)) > 1:
+        test_auc = roc_auc_score(all_labels, all_probs)
+        print(f"Test AUC: {test_auc:.3f}")
+        if test_auc > best_auc:
+            best_auc = test_auc
+            epochs_no_improve = 0
+        else:
+            epochs_no_improve += 1
+        if epochs_no_improve >= patience:
+            print(f"Early stopping at epoch {epoch} (no improvement in {patience} epochs)")
+            break
     else:
-        epochs_no_improve += 1
-    if epochs_no_improve >= patience:
-        print(f"Early stopping at epoch {epoch} (no improvement in {patience} epochs)")
-        break
+        print("Not enough positive/negative samples in test set for AUC.")
 
 
 def evaluate_graphs(graphs, model, device, set_name="Test"):
