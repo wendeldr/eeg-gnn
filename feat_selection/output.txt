@@ -1,0 +1,747 @@
+(networks) (base) ➜  epd_network git:(main) ✗  cd /media/dan/Data/git/epd_network ; /usr/bin/env /home/dan/anaconda3/envs/networks/bin/python
+ /home/dan/.cursor/extensions/ms-python.debugpy-2025.6.0-linux-x64/bundled/libs/debugpy/adapter/../../debugpy/launcher 38415 -- /media/dan/Da
+ta/git/epd_network/feat_selection/feature_selection.py 
+Running Low-Variance feature removal...
+  > Removed 0 low-variance features. Kept 154.
+Removed 121 correlated features. Kept 33.
+Running Filter-based selection (Univariate)...
+  > Selected 16 features.
+Running Wrapper-based selection (RFECV)...
+Fitting estimator with 33 features.
+Fitting estimator with 33 features.
+Fitting estimator with 33 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    4.9s remaining:   19.8s
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    5.0s remaining:   20.1s
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    5.3s remaining:   21.3s
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    5.5s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.1s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 32 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    6.7s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.1s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 32 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    7.3s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.1s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 32 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    5.1s remaining:   20.2s
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    5.0s remaining:   19.8s
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    5.3s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.1s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 31 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    5.3s remaining:   21.2s
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    7.2s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.1s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 31 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    5.8s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.1s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 31 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    5.0s remaining:   20.0s
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    5.4s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.1s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 30 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    5.1s remaining:   20.5s
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    5.4s remaining:   21.6s
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    6.0s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.0s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 30 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    7.1s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.1s remaining:    0.3s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 30 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    5.0s remaining:   20.0s
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    5.3s remaining:   21.1s
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    5.0s remaining:   20.0s
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    7.4s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.0s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 29 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    5.3s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.0s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 29 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    6.9s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.1s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 29 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    4.9s remaining:   19.6s
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    5.0s remaining:   19.8s
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    5.4s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.0s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 28 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    5.7s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.1s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 28 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    5.2s remaining:   20.9s
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    5.6s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.1s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 28 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    5.0s remaining:   19.9s
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    5.4s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.1s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 27 features.
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    5.0s remaining:   19.9s
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    5.3s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.1s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 27 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    5.1s remaining:   20.6s
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    5.7s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.1s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 27 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    5.1s remaining:   20.4s
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    5.1s remaining:   20.4s
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    6.6s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.0s remaining:    0.2s
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    5.1s remaining:   20.6s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 26 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    6.6s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.0s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 26 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    7.0s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.0s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 26 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    4.8s remaining:   19.3s
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    5.1s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.1s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 25 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    5.0s remaining:   19.9s
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    5.3s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.0s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 25 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    5.2s remaining:   20.9s
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    7.6s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.1s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 25 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    4.9s remaining:   19.4s
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    5.3s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.1s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 24 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    4.8s remaining:   19.2s
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    5.1s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.0s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 24 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    3.9s remaining:   15.8s
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    5.1s remaining:   20.6s
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    4.3s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.1s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 23 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    4.0s remaining:   15.8s
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    5.7s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.0s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 24 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    5.2s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.1s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 23 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    4.1s remaining:   16.5s
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    4.1s remaining:   16.4s
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    4.1s remaining:   16.5s
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    5.6s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.0s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 23 features.
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    6.3s finished
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.0s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 22 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    5.2s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.1s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 22 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    3.9s remaining:   15.7s
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    4.2s remaining:   16.7s
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    4.0s remaining:   16.2s
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    4.7s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.0s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 21 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    5.3s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.0s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 22 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    5.8s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.0s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 21 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    4.1s remaining:   16.2s
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    4.4s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    4.1s remaining:   16.4s
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.1s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 20 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    4.1s remaining:   16.2s
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    5.5s finished
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    4.3s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.0s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.0s remaining:    0.2s
+Fitting estimator with 21 features.
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 20 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    3.9s remaining:   15.6s
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    4.0s remaining:   16.2s
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    4.2s remaining:   16.6s
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    5.6s finished
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    5.7s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.0s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 19 features.
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.0s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+Fitting estimator with 20 features.
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    7.3s finished
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.1s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 19 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    4.0s remaining:   15.8s
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    4.2s remaining:   16.7s
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    4.0s remaining:   16.1s
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    4.4s finished
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    4.5s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.0s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.1s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 19 features.
+Fitting estimator with 18 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    5.2s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.1s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 18 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    4.0s remaining:   15.9s
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    4.1s remaining:   16.3s
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    3.9s remaining:   15.6s
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    4.2s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.0s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 17 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    5.5s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.0s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 17 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    6.1s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.1s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 18 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    3.9s remaining:   15.5s
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    4.2s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.1s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 16 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    4.0s remaining:   15.9s
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    4.1s remaining:   16.5s
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    6.8s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.1s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 16 features.
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    6.3s finished
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.0s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 17 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    3.9s remaining:   15.5s
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    5.8s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.1s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 15 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    3.9s remaining:   15.6s
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    4.1s remaining:   16.6s
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    4.4s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.1s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 16 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    5.7s finished
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    3.1s remaining:   12.2s
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.1s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 15 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    3.5s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.1s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 14 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    3.0s remaining:   12.0s
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    4.2s remaining:   16.8s
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    3.2s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.1s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 14 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    3.0s remaining:   11.9s
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    3.1s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.0s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 13 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    5.6s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.0s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 15 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    2.9s remaining:   11.6s
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    3.1s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.0s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 13 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    3.0s remaining:   12.0s
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    3.2s remaining:   12.7s
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    3.5s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.0s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 14 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    4.7s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.1s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 12 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    2.9s remaining:   11.6s
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    3.1s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.1s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 12 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    3.2s remaining:   12.8s
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    3.0s remaining:   11.9s
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    3.1s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.0s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 11 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    4.5s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.0s remaining:    0.2s
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    2.9s remaining:   11.7s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 13 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    4.4s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.0s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 11 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    2.9s remaining:   11.7s
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    3.7s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.0s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 10 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    3.1s remaining:   12.4s
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    4.3s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.1s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 12 features.
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    2.9s remaining:   11.8s
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    3.2s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.1s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 10 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    2.9s remaining:   11.5s
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    4.1s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.0s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 9 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    3.1s remaining:   12.4s
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    3.2s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    2.9s remaining:   11.5s
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.0s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 11 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    3.1s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.0s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 9 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    2.9s remaining:   11.5s
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    3.0s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.0s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 8 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    2.8s remaining:   11.4s
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    3.2s remaining:   12.7s
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    3.4s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.0s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 10 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    2.1s remaining:    8.4s
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    4.2s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.0s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    2.3s finished
+Fitting estimator with 8 features.
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.1s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 7 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    3.0s remaining:   12.1s
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    2.0s remaining:    8.0s
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    2.1s finished
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    2.0s remaining:    8.1s
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.0s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 7 features.
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    2.2s finished
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.0s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 6 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    4.0s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.0s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 9 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    2.0s remaining:    7.8s
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    2.0s remaining:    8.1s
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    2.2s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.0s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 5 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    3.5s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.0s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 6 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    3.1s remaining:   12.4s
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    2.1s remaining:    8.4s
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    2.2s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.0s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 4 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    4.6s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.0s remaining:    0.2s
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    1.9s remaining:    7.6s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 8 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    2.0s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.0s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 5 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    2.2s remaining:    8.7s
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    1.9s remaining:    7.6s
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    2.0s finished
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    2.2s remaining:    9.0s
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.0s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 4 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    3.1s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.0s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 3 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    2.8s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.1s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 7 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    1.4s remaining:    5.5s
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    1.5s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.1s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 2 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    1.9s remaining:    7.7s
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    2.0s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.0s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 3 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    2.2s remaining:    8.8s
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    1.5s remaining:    6.0s
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    1.3s remaining:    5.0s
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    1.6s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.1s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    3.2s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.0s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 6 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    1.8s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.1s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 2 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    1.3s remaining:    5.3s
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    1.8s remaining:    7.3s
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    2.1s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.1s remaining:    0.3s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    1.9s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    2.2s remaining:    8.6s
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.1s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    2.3s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.0s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 5 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    1.8s remaining:    7.3s
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    2.3s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    2.1s remaining:    8.5s
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.1s remaining:    0.3s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    2.7s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.0s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 4 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    2.1s remaining:    8.4s
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    2.3s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.0s remaining:    0.2s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 3 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    1.4s remaining:    5.6s
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    1.8s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.1s remaining:    0.3s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+Fitting estimator with 2 features.
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    1.4s remaining:    5.5s
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    1.5s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.1s remaining:    0.3s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    1.9s remaining:    7.4s
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    2.1s finished
+[Parallel(n_jobs=10)]: Using backend ThreadingBackend with 10 concurrent workers.
+[Parallel(n_jobs=10)]: Done   2 out of  10 | elapsed:    0.1s remaining:    0.3s
+[Parallel(n_jobs=10)]: Done  10 out of  10 | elapsed:    0.1s finished
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    8.1s remaining:   32.4s
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:   12.3s finished
+[Parallel(n_jobs=32)]: Using backend ThreadingBackend with 32 concurrent workers.
+[Parallel(n_jobs=32)]: Done   2 out of  10 | elapsed:    8.2s remaining:   32.7s
+[Parallel(n_jobs=32)]: Done  10 out of  10 | elapsed:    9.8s finished
+  > Selected 33 features via RFECV.
+Running Embedded selection (L1/Lasso)...
+/home/dan/anaconda3/envs/networks/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1256: FutureWarning: 'multi_class' was deprecated in version 1.5 and will be removed in 1.7. Use OneVsRestClassifier(LogisticRegression(..)) instead. Leave it to its default value to avoid this warning.
+  warnings.warn(
+  > Selected 33 features via L1 regularization.
+
+Consolidating results from all methods...
+
+--- Final Selected Features (voted by >= 2 methods): 33 ---
+PLI_150-250
+PLV_150-250
+Phase_0-NYQ
+Phase_1-4
+Phase_1-70
+Phase_13-30
+Phase_30-70
+Phase_70-150
+bary_euclidean_max
+bary_euclidean_mean
+cov_sq-GraphicalLasso
+dsPLI_1-250
+dsPLI_1-4
+dsPLI_150-250
+dsPLI_30-70
+dsPLI_70-250
+dswPLI_0-NYQ
+dswPLI_13-30
+dswPLI_4-8
+dswPLI_70-150
+dswPLI_8-13
+iCoh_0-NYQ
+iCoh_13-30
+iCoh_4-8
+iCoh_70-150
+je_gaussian
+pec_orth_log
+pec_orth_log_abs
+prec_sq-EmpiricalCovariance
+prec_sq-GraphicalLasso
+prec_sq-ShrunkCovariance
+xcorr_mean
+xcorr_sq-mean

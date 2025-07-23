@@ -7,6 +7,7 @@ from sklearn.metrics import roc_curve, roc_auc_score, precision_recall_fscore_su
 import matplotlib.pyplot as plt
 import random
 from sklearn.metrics import roc_auc_score
+from termcolor import colored
 
 from tqdm import tqdm
 from torch_geometric.data import Data
@@ -17,10 +18,21 @@ from torch_geometric.nn import NNConv, global_mean_pool  # we won’t pool, but 
 def build_patient_graphs(csv_path: str,
                          skip_cols: list[str]) -> tuple[list[Data], list[str]]:
 
-    df = pd.read_csv(csv_path, low_memory=False)
+    # df = pd.read_csv(csv_path, low_memory=False)
+    df = pd.read_feather('/media/dan/Data/git/epd_network/renamed_mean_data.feather') 
+    
+    # we add additional columns later so get them now
+    targets = [c for c in df.columns if c not in skip_cols]
+    targets = ["PLI_150-250","PLV_150-250","Phase_0-NYQ","Phase_1-4","Phase_1-70","Phase_13-30","Phase_30-70","Phase_70-150","bary_euclidean_max","bary_euclidean_mean","cov_sq-GraphicalLasso","dsPLI_1-250","dsPLI_1-4","dsPLI_150-250","dsPLI_30-70","dsPLI_70-250","dswPLI_0-NYQ","dswPLI_13-30","dswPLI_4-8","dswPLI_70-150","dswPLI_8-13","iCoh_0-NYQ","iCoh_13-30","iCoh_4-8","iCoh_70-150","je_gaussian","pec_orth_log","pec_orth_log_abs","prec_sq-EmpiricalCovariance","prec_sq-GraphicalLasso","prec_sq-ShrunkCovariance","xcorr_mean","xcorr_sq-mean"]
 
     # remove any patients with only one value of soz_sum
     df = df[df.groupby('pid')['soz_sum'].transform('nunique') > 1]
+
+    inf_mask = (df[targets] > 1e200) | (df[targets] < -1e200)
+    df.loc[:, targets] = df[targets].replace([np.inf, -np.inf], np.nan)
+    df.loc[:, targets] = df[targets].mask(inf_mask, np.nan)
+    df[targets] = df[targets].fillna(0)
+
     # fill miccai_label_a and miccai_label_b with 'unknown' if nan
     df['miccai_label_a'] = df['miccai_label_a'].fillna('unknown')
     df['miccai_label_b'] = df['miccai_label_b'].fillna('unknown')
@@ -39,8 +51,6 @@ def build_patient_graphs(csv_path: str,
     etiology_to_idx = {l: i for i, l in enumerate(unique_etiologies)}
     df['etiology_idx'] = df['etiology'].map(etiology_to_idx)
 
-    targets = [c for c in df.columns if c not in skip_cols]
-
     # ── z‑score every feature inside each patient ──────────────────────────────
     df_z = df.copy()
     for col in targets:
@@ -54,35 +64,66 @@ def build_patient_graphs(csv_path: str,
     data_list = []
     for pid, grp in tqdm(df_z.groupby("pid"),desc="Building patient graphs"):
         n_nodes = int(max(grp.electrode_a.max(), grp.electrode_b.max()))
+
+        # edge matrix
+        edge_mat = np.zeros((n_nodes,n_nodes,len(targets)))
+        a_idx = grp['electrode_a'].values.astype(int) - 1
+        b_idx = grp['electrode_b'].values.astype(int) - 1
+        target_vals = grp[targets].values  # shape (num_edges, num_targets)
+
+        for (src, dst) in [(a_idx, b_idx), (b_idx, a_idx)]:
+            edge_mat[src[:, None], dst[:, None], np.arange(len(targets))] = target_vals
+
+        # Create a mask that is True on the diagonal
+        mask2d = np.eye(edge_mat.shape[0], dtype=bool)
+        mask3d = np.broadcast_to(mask2d[:, :, None], edge_mat.shape) 
+
+        # Wrap A in a masked array, masking out the diagonal
+        M = np.ma.masked_array(edge_mat, mask=mask3d)
+        
+        # Compute row‐wise mean and std, ignoring masked elements
+        row_means = M.mean(axis=0).data
+        row_stds  = M.std(axis=0).data
+
         edges, e_attr = [], []
 
         y = torch.full((n_nodes,), -1, dtype=torch.long)
 
-        node_lbls = torch.full((n_nodes,3), -1, dtype=torch.long)
+        z = row_means.shape[1]
+        node_lbls = torch.full((n_nodes,z*2 + 3), -1, dtype=torch.long)
+        node_lbls[:,0:z] = torch.tensor(row_means)
+        node_lbls[:,z:z*2] = torch.tensor(row_stds)
+
+        # node labels
+
         # Collect edges and their target (154‑D) attributes
         for _, row in grp.iterrows():
             i, j = int(row.electrode_a) - 1, int(row.electrode_b) - 1
             feat = row[targets].to_numpy(dtype=np.float32)
 
-            edges.append([i, j])
-            e_attr.append(feat)
-            # edges += [[i, j], [j, i]]
-            # e_attr += [feat, feat]
+            # apperently one direction is incorrect since it never lets the model learn the other direction
+            # we need to add both directions
+            # edges.append([i, j])
+            # e_attr.append(feat)
+            edges += [[i, j], [j, i]]
+            e_attr += [feat, feat]
 
             # Node labels (only need to be set once)
             if y[i] == -1:
                 y[i] = int(row.soz_a)
-                node_lbls[i,:] = torch.tensor([row.miccai_label_a_idx, row.age_days, row.etiology_idx])
+                node_lbls[i,-3:] = torch.tensor([row.miccai_label_a_idx, row.age_days, row.etiology_idx])
                 
             if y[j] == -1:
                 y[j] = int(row.soz_b)
-                node_lbls[j,:] = torch.tensor([row.miccai_label_b_idx, row.age_days, row.etiology_idx])
-            
+                node_lbls[j,-3:] = torch.tensor([row.miccai_label_b_idx, row.age_days, row.etiology_idx])
+        
+        edges = np.array(edges)
+        e_attr = np.array(e_attr)
         edge_index = torch.tensor(edges,dtype=torch.long).t().contiguous()
         edge_attr  = torch.tensor(e_attr,dtype=torch.float32).contiguous()
 
-        # Very simple node feature: constant 1 (shape [n_nodes, 1])
-        x = torch.ones((n_nodes, 1), dtype=torch.float32)
+        # Use node_lbls as node features (shape [n_nodes, x])
+        x = node_lbls.float()
 
         ilae_label = torch.tensor([grp.ilae.values[0]], dtype=torch.float32)
 
@@ -109,8 +150,8 @@ class NodeClassifierGNN(nn.Module):
         self.edge_mlps = nn.ModuleList()
         self.dropouts = nn.ModuleList()
 
-        # input size of node feature is 1 (used constant ones)
-        in_channels = 1
+        # input size of node feature is now 154*2+3 (from node_lbls)
+        in_channels = 154*2+3
         for _ in range(n_layers):
             edge_nn = nn.Sequential(
                 nn.Linear(edge_in_dim, hidden),
@@ -136,8 +177,8 @@ class NodeClassifierGNN(nn.Module):
 
 
 def train_model(train_graphs, model, device, num_epochs=100, patience=10):
-    loader = DataLoader(train_graphs, batch_size=4, shuffle=True)
-    optimizer = torch.optim.Adam(model.parameters(), lr=3e-4, weight_decay=1e-3)
+    loader = DataLoader(train_graphs, batch_size=1, shuffle=True)
+    optimizer = torch.optim.Adam(model.parameters(), lr=1e-4, weight_decay=1e-3)
     
     # basic bce loss
     # criterion = nn.BCEWithLogitsLoss()
@@ -151,6 +192,8 @@ def train_model(train_graphs, model, device, num_epochs=100, patience=10):
 
     best_auc = 0
     epochs_no_improve = 0
+    best_state_dict = None  # <--- add this
+
     for epoch in range(1, num_epochs + 1):
         model.train()
         total_loss = 0.
@@ -162,6 +205,7 @@ def train_model(train_graphs, model, device, num_epochs=100, patience=10):
             loss.backward()
             optimizer.step()
             total_loss += loss.item() * data.num_graphs
+        print(f"Epoch {epoch} loss: {total_loss / len(loader)}")
         # Early stopping: evaluate on train set every epoch
         model.eval()
         all_probs = []
@@ -180,13 +224,21 @@ def train_model(train_graphs, model, device, num_epochs=100, patience=10):
             train_auc = roc_auc_score(all_labels, all_probs)
             if train_auc > best_auc:
                 best_auc = train_auc
+                best_state_dict = model.state_dict()  # save best model
+                print(colored(f"Train AUC {train_auc:.3f} >  Best AUC {best_auc:.3f}", 'green'))
                 epochs_no_improve = 0
             else:
+                print(colored(f"Train AUC {train_auc:.3f} <= Best AUC {best_auc:.3f}", 'red'))
                 epochs_no_improve += 1
             if epochs_no_improve >= patience:
+                print(colored(f"Early stopping at epoch {epoch} (no improvement in {patience} epochs)", 'yellow'))
                 break
         else:
             break
+
+    # Restore best model before returning
+    if best_state_dict is not None:
+        model.load_state_dict(best_state_dict)
     return model
 
 
@@ -287,6 +339,6 @@ if __name__ == "__main__":
         print(f"Mean AP: {np.mean(aps):.3f} ± {np.std(aps):.3f}")
         print(f"Mean F1: {np.mean(f1s):.3f} ± {np.std(f1s):.3f}")
     else:
-        print("No valid LOO splits for metrics.")
+        print("No valid LOO splits for metrics.")           
 
 
