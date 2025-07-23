@@ -181,7 +181,7 @@ class NodeClassifierGNN(nn.Module):
 
 
 class FocalLoss(nn.Module):
-    def __init__(self, alpha=0.25, gamma=2.0, reduction='sum'):
+    def __init__(self, alpha=0.25, gamma=2.0, reduction='mean'):
         super().__init__()
         self.alpha = alpha
         self.gamma = gamma
@@ -207,7 +207,25 @@ def train_model(train_graphs, val_graphs, test_graph, model, device, num_epochs=
     val_loader = DataLoader(val_graphs, batch_size=val_batch_size, shuffle=False)
     optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=weight_decay)
     # Focal loss for imbalance
-    criterion = FocalLoss(alpha=0.25, gamma=2.0)
+    all_labels = np.concatenate([data.y.cpu().numpy() for data in train_graphs])
+    all_labels = all_labels[all_labels >= 0]
+    # Calculate alpha as the proportion of the dataset that is the negative class
+    alpha = np.sum(all_labels == 0) / len(all_labels)
+
+    # Now use this calculated alpha
+    # criterion = FocalLoss(alpha=alpha, gamma=.5, reduction='mean')
+    
+
+    all_labels = np.concatenate([data.y.cpu().numpy() for data in train_graphs])
+    all_labels = all_labels[all_labels >= 0] # Filter out unknowns
+    if np.sum(all_labels == 1) > 0:
+        num_pos = np.sum(all_labels == 1)
+        num_neg = np.sum(all_labels == 0)
+        pos_weight = torch.tensor([num_neg / num_pos], device=device)
+    else:
+        pos_weight = torch.tensor([1.0], device=device) # Default if no positives in batch
+    criterion = nn.BCEWithLogitsLoss(pos_weight=pos_weight)
+
     best_ap = 0
     best_f1 = 0
     best_loss = np.inf
@@ -395,10 +413,10 @@ if __name__ == "__main__":
     # Hardcoded hyperparameters
     hidden = 64
     n_layers = 2
-    dropout = 0.2
+    dropout = 0.4
     num_epochs = 100
     patience = 10
-    lr = 1e-5
+    lr = 5e-5    
     weight_decay = 1e-4
     train_batch_size = 1
     val_batch_size = 1
@@ -419,7 +437,7 @@ if __name__ == "__main__":
         print("Processed and saved graphs.")
 
     # Filter to only patients with ilae == 1
-    filtered_graphs = [g for g in graphs if g.ilae.item() >= 1]
+    filtered_graphs = [g for g in graphs if g.ilae.item() == 1]
     # filtered_graphs = graphs
     print(f"Total ilae==1 patients: {len(filtered_graphs)}")
 
