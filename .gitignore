@@ -1,3 +1,13 @@
+*.feather
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.bmp
+*.tiff
+*.ico
+*.webp
+
 # Python
 __pycache__/
 *.py[cod]

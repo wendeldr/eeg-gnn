@@ -3,16 +3,20 @@ import numpy as np
 import torch
 import torch.nn as nn
 import os
-from sklearn.metrics import roc_curve, roc_auc_score, precision_recall_fscore_support, confusion_matrix, average_precision_score
+from sklearn.metrics import fbeta_score, roc_curve, roc_auc_score, precision_recall_fscore_support, confusion_matrix, average_precision_score
 import matplotlib.pyplot as plt
 import random
 from sklearn.metrics import roc_auc_score
 from termcolor import colored
+from sklearn.model_selection import train_test_split
 
 from tqdm import tqdm
 from torch_geometric.data import Data
 from torch_geometric.loader import DataLoader
 from torch_geometric.nn import NNConv, global_mean_pool  # we won’t pool, but handy later
+import argparse
+
+import copy
 
 
 def build_patient_graphs(csv_path: str,
@@ -150,8 +154,8 @@ class NodeClassifierGNN(nn.Module):
         self.edge_mlps = nn.ModuleList()
         self.dropouts = nn.ModuleList()
 
-        # input size of node feature is now 154*2+3 (from node_lbls)
-        in_channels = 154*2+3
+        # input size of node feature is now 33*2+3 (from node_lbls)
+        in_channels = 33*2+3
         for _ in range(n_layers):
             edge_nn = nn.Sequential(
                 nn.Linear(edge_in_dim, hidden),
@@ -176,28 +180,43 @@ class NodeClassifierGNN(nn.Module):
         return out                              # raw logits
 
 
-def train_model(train_graphs, model, device, num_epochs=100, patience=10):
-    loader = DataLoader(train_graphs, batch_size=1, shuffle=True)
-    optimizer = torch.optim.Adam(model.parameters(), lr=1e-4, weight_decay=1e-3)
-    
-    # basic bce loss
-    # criterion = nn.BCEWithLogitsLoss()
+class FocalLoss(nn.Module):
+    def __init__(self, alpha=0.25, gamma=2.0, reduction='sum'):
+        super().__init__()
+        self.alpha = alpha
+        self.gamma = gamma
+        self.reduction = reduction
 
-    # weighted bce loss
-    all_labels = np.concatenate([data.y.cpu().numpy() for data in train_graphs])
-    num_pos = np.sum(all_labels == 1)
-    num_neg = np.sum(all_labels == 0)
-    pos_weight = torch.tensor([num_neg / num_pos], device=device)
-    criterion = nn.BCEWithLogitsLoss(pos_weight=pos_weight)
+    def forward(self, logits, targets):
+        # logits: (N,) or (N,1), targets: (N,) or (N,1)
+        probs = torch.sigmoid(logits)
+        targets = targets.float()
+        pt = torch.where(targets == 1, probs, 1 - probs).clamp(1e-6, 1 - 1e-6)
+        alpha_t = self.alpha * targets + (1 - self.alpha) * (1 - targets)
+        loss = -alpha_t * (1 - pt) ** self.gamma * torch.log(pt)
+        if self.reduction == 'mean':
+            return loss.mean()
+        elif self.reduction == 'sum':
+            return loss.sum()
+        else:
+            return loss
 
-    best_auc = 0
+
+def train_model(train_graphs, val_graphs, test_graph, model, device, num_epochs=100, patience=10, lr=1e-4, weight_decay=1e-3, train_batch_size=1, val_batch_size=1):
+    train_loader = DataLoader(train_graphs, batch_size=train_batch_size, shuffle=True)
+    val_loader = DataLoader(val_graphs, batch_size=val_batch_size, shuffle=False)
+    optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=weight_decay)
+    # Focal loss for imbalance
+    criterion = FocalLoss(alpha=0.25, gamma=2.0)
+    best_ap = 0
+    best_f1 = 0
+    best_loss = np.inf
     epochs_no_improve = 0
-    best_state_dict = None  # <--- add this
-
+    best_state_dict = None
     for epoch in range(1, num_epochs + 1):
         model.train()
         total_loss = 0.
-        for data in loader:
+        for data in train_loader:
             data = data.to(device)
             logits = model(data)
             loss = criterion(logits, data.y.float())
@@ -205,50 +224,106 @@ def train_model(train_graphs, model, device, num_epochs=100, patience=10):
             loss.backward()
             optimizer.step()
             total_loss += loss.item() * data.num_graphs
-        print(f"Epoch {epoch} loss: {total_loss / len(loader)}")
-        # Early stopping: evaluate on train set every epoch
+        print(f"Epoch {epoch} loss: {total_loss / len(train_loader)}")
+        # Early stopping: evaluate on validation set every epoch
         model.eval()
-        all_probs = []
-        all_labels = []
+        val_probs = []
+        val_labels = []
         with torch.no_grad():
-            for data in train_graphs:
+            for data in val_loader:
                 data = data.to(device)
                 probs = torch.sigmoid(model(data)).cpu().numpy()
                 labels = data.y.cpu().numpy()
                 mask = labels >= 0
-                all_probs.append(probs[mask])
-                all_labels.append(labels[mask])
-        all_probs = np.concatenate(all_probs)
-        all_labels = np.concatenate(all_labels)
-        if len(np.unique(all_labels)) > 1:
-            train_auc = roc_auc_score(all_labels, all_probs)
-            if train_auc > best_auc:
-                best_auc = train_auc
-                best_state_dict = model.state_dict()  # save best model
-                print(colored(f"Train AUC {train_auc:.3f} >  Best AUC {best_auc:.3f}", 'green'))
+                val_probs.append(probs[mask])
+                val_labels.append(labels[mask])
+        val_probs = np.concatenate(val_probs)
+        val_labels = np.concatenate(val_labels)
+        if len(np.unique(val_labels)) > 1:
+            val_ap = average_precision_score(val_labels, val_probs)
+            pred_bin = (val_probs >= 0.5).astype(int)
+            _, _, val_f1, _ = precision_recall_fscore_support(val_labels, pred_bin, average='binary', zero_division=0)
+            if val_ap > best_ap:
+                best_ap = val_ap
+                best_f1 = val_f1
+                best_loss = total_loss / len(train_loader)
+                best_state_dict = copy.deepcopy(model.state_dict())
+                print(colored(f"Val AP {val_ap:.3f} (F1={val_f1:.3f}) >  Best Val AP {best_ap:.3f} (F1={best_f1:.3f})", 'green'))
                 epochs_no_improve = 0
             else:
-                print(colored(f"Train AUC {train_auc:.3f} <= Best AUC {best_auc:.3f}", 'red'))
+                print(colored(f"Val AP {val_ap:.3f} (F1={val_f1:.3f}) <= Best Val AP {best_ap:.3f} (F1={best_f1:.3f})", 'red'))
                 epochs_no_improve += 1
             if epochs_no_improve >= patience:
                 print(colored(f"Early stopping at epoch {epoch} (no improvement in {patience} epochs)", 'yellow'))
+                print(colored(f"Best loss={best_loss:.3f}, Current loss={total_loss / len(train_loader)}", 'red'))
                 break
+            # Evaluate on test set
+            model.eval()
+            with torch.no_grad():
+                data = test_graph.to(device)
+                probs = torch.sigmoid(model(data)).cpu().numpy()
+                labels = data.y.cpu().numpy()
+                mask = labels >= 0
+                if np.sum(mask) < 2 or len(np.unique(labels[mask])) < 2:
+                    continue
+                auc = roc_auc_score(labels[mask], probs[mask])
+                ap = average_precision_score(labels[mask], probs[mask])
+                pred_bin = (probs[mask] >= 0.5).astype(int)
+                precision, recall, f1, _ = precision_recall_fscore_support(labels[mask], pred_bin, average='binary', zero_division=0)
+                pid = test_graph.pid.cpu().numpy()[0]
+                print(colored(f"TEST pid={pid}: AUC={auc:.3f}, AP={ap:.3f}, F1={f1:.3f}, prec={precision:.3f}, recall={recall:.3f}", 'blue'))
         else:
+            print("Not enough class variety in validation set for metrics. Stopping.")
             break
-
     # Restore best model before returning
     if best_state_dict is not None:
         model.load_state_dict(best_state_dict)
     return model
 
 
-def loo_crossval(graphs, device, edge_in_dim, hidden=32, n_layers=2, dropout=0.2, num_epochs=100, patience=10):
+def loo_crossval(graphs, device, edge_in_dim, hidden=32, n_layers=2, dropout=0.2, num_epochs=100, patience=10, lr=1e-4, weight_decay=1e-3, train_batch_size=1, val_batch_size=1):
     results = []
     for i in range(len(graphs)):
         test_graph = graphs[i]
         train_graphs = graphs[:i] + graphs[i+1:]
+        # Split train_graphs into train/val for early stopping
+        if len(train_graphs) > 1:
+            train_fold_graphs, val_fold_graphs = train_test_split(train_graphs, test_size=0.1, random_state=42)
+            # If val set is empty (rare, e.g. very small data), use 1 for val
+            if len(val_fold_graphs) == 0:
+                val_fold_graphs = train_fold_graphs[-1:]
+                train_fold_graphs = train_fold_graphs[:-1]
+        else:
+            train_fold_graphs = train_graphs
+            val_fold_graphs = train_graphs
         model = NodeClassifierGNN(edge_in_dim=edge_in_dim, hidden=hidden, n_layers=n_layers, dropout=dropout).to(device)
-        model = train_model(train_graphs, model, device, num_epochs=num_epochs, patience=patience)
+        model = train_model(train_fold_graphs, val_fold_graphs, test_graph,model, device, num_epochs=num_epochs, patience=patience, lr=lr, weight_decay=weight_decay, train_batch_size=train_batch_size, val_batch_size=val_batch_size)
+        model.eval()
+        with torch.no_grad():
+            val_loader = DataLoader(val_fold_graphs, batch_size=val_batch_size, shuffle=False)
+            val_probs = []
+            val_labels = []
+            for data in val_loader:
+                data = data.to(device)
+                probs = torch.sigmoid(model(data)).cpu().numpy()
+                labels = data.y.cpu().numpy()
+                mask = labels >= 0
+                val_probs.append(probs[mask])
+                val_labels.append(labels[mask])
+            val_probs = np.concatenate(val_probs)
+            val_labels = np.concatenate(val_labels)
+
+        # Search for the threshold that maximizes your target metric (e.g., F0.5-score)
+        thresholds = np.linspace(0.01, 0.99, 100)
+        best_f_beta = -1
+        best_thresh = 0.5
+        for thresh in thresholds:
+            preds = (val_probs >= thresh).astype(int)
+            f_beta = fbeta_score(val_labels, preds, beta=0.5, zero_division=0)
+            if f_beta > best_f_beta:
+                best_f_beta = f_beta
+                best_thresh = thresh
+        print(f"Optimal threshold found: {best_thresh:.3f} with F0.5-score: {best_f_beta:.3f}")
         # Evaluate on left-out graph
         model.eval()
         with torch.no_grad():
@@ -257,11 +332,10 @@ def loo_crossval(graphs, device, edge_in_dim, hidden=32, n_layers=2, dropout=0.2
             labels = data.y.cpu().numpy()
             mask = labels >= 0
             if np.sum(mask) < 2 or len(np.unique(labels[mask])) < 2:
-                # Not enough data for metrics
                 continue
             auc = roc_auc_score(labels[mask], probs[mask])
             ap = average_precision_score(labels[mask], probs[mask])
-            pred_bin = (probs[mask] >= 0.5).astype(int)
+            pred_bin = (probs[mask] >= best_thresh).astype(int)
             precision, recall, f1, _ = precision_recall_fscore_support(labels[mask], pred_bin, average='binary', zero_division=0)
             results.append({
                 'auc': auc,
@@ -271,7 +345,8 @@ def loo_crossval(graphs, device, edge_in_dim, hidden=32, n_layers=2, dropout=0.2
                 'f1': f1
             })
         pid = test_graph.pid.cpu().numpy()[0]
-        print(f"LOO {i+1}/{len(graphs)} pid={pid}: AUC={auc:.3f}, AP={ap:.3f}, F1={f1:.3f}")
+        print(f"LOO {i+1}/{len(graphs)} pid={pid}: AUC={auc:.3f}, AP={ap:.3f}, F1={f1:.3f}, prec={precision:.3f}, recall={recall:.3f}")
+        break
     return results
 
 def evaluate_graphs(graphs, model, device, set_name="Test"):
@@ -308,6 +383,26 @@ def evaluate_graphs(graphs, model, device, set_name="Test"):
     return fpr, tpr, auc
 
 if __name__ == "__main__":
+    # For reproducibility
+    seed = 12
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
+
+    # Hardcoded hyperparameters
+    hidden = 64
+    n_layers = 2
+    dropout = 0.2
+    num_epochs = 100
+    patience = 10
+    lr = 1e-5
+    weight_decay = 1e-4
+    train_batch_size = 1
+    val_batch_size = 1
+
     skip = ["pid","electrode_pair","electrode_a","electrode_b",
             "soz_a","soz_b","ilae","electrode_pair_names",
             "electrode_a_name","electrode_b_name","miccai_label_a",
@@ -324,12 +419,18 @@ if __name__ == "__main__":
         print("Processed and saved graphs.")
 
     # Filter to only patients with ilae == 1
-    # filtered_graphs = [g for g in graphs if g.ilae.item() >= 1]
-    filtered_graphs = graphs
+    filtered_graphs = [g for g in graphs if g.ilae.item() >= 1]
+    # filtered_graphs = graphs
     print(f"Total ilae==1 patients: {len(filtered_graphs)}")
 
     device   = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    results = loo_crossval(filtered_graphs, device, edge_in_dim=len(targets), hidden=32, n_layers=2, dropout=0.2, num_epochs=100, patience=10)
+    results = loo_crossval(
+        filtered_graphs, device, edge_in_dim=len(targets),
+        hidden=hidden, n_layers=n_layers, dropout=dropout,
+        num_epochs=num_epochs, patience=patience,
+        lr=lr, weight_decay=weight_decay,
+        train_batch_size=train_batch_size, val_batch_size=val_batch_size
+    )
     if results:
         aucs = [r['auc'] for r in results]
         aps = [r['ap'] for r in results]
@@ -339,6 +440,17 @@ if __name__ == "__main__":
         print(f"Mean AP: {np.mean(aps):.3f} ± {np.std(aps):.3f}")
         print(f"Mean F1: {np.mean(f1s):.3f} ± {np.std(f1s):.3f}")
     else:
-        print("No valid LOO splits for metrics.")           
+        print("No valid LOO splits for metrics.")
 
+    print("\nParameters used:")
+    print(f"  hidden: {hidden}")
+    print(f"  n_layers: {n_layers}")
+    print(f"  dropout: {dropout}")
+    print(f"  num_epochs: {num_epochs}")
+    print(f"  patience: {patience}")
+    print(f"  lr: {lr}")
+    print(f"  weight_decay: {weight_decay}")
+    print(f"  train_batch_size: {train_batch_size}")
+    print(f"  val_batch_size: {val_batch_size}")
+           
 
