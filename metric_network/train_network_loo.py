@@ -14,7 +14,7 @@ from tqdm import tqdm
 from torch_geometric.data import Data
 from torch_geometric.loader import DataLoader
 from torch_geometric.nn import NNConv, global_mean_pool  # we won’t pool, but handy later
-import argparse
+from torch_geometric.nn import GATConv
 
 import copy
 
@@ -26,8 +26,13 @@ def build_patient_graphs(csv_path: str,
     df = pd.read_feather('/media/dan/Data/git/epd_network/renamed_mean_data.feather') 
     
     # we add additional columns later so get them now
-    targets = [c for c in df.columns if c not in skip_cols]
-    targets = ["PLI_150-250","PLV_150-250","Phase_0-NYQ","Phase_1-4","Phase_1-70","Phase_13-30","Phase_30-70","Phase_70-150","bary_euclidean_max","bary_euclidean_mean","cov_sq-GraphicalLasso","dsPLI_1-250","dsPLI_1-4","dsPLI_150-250","dsPLI_30-70","dsPLI_70-250","dswPLI_0-NYQ","dswPLI_13-30","dswPLI_4-8","dswPLI_70-150","dswPLI_8-13","iCoh_0-NYQ","iCoh_13-30","iCoh_4-8","iCoh_70-150","je_gaussian","pec_orth_log","pec_orth_log_abs","prec_sq-EmpiricalCovariance","prec_sq-GraphicalLasso","prec_sq-ShrunkCovariance","xcorr_mean","xcorr_sq-mean"]
+    # targets = [c for c in df.columns if c not in skip_cols]
+
+    # these were from the feature selection notebook
+    # targets = ["PLI_150-250","PLV_150-250","Phase_0-NYQ","Phase_1-4","Phase_1-70","Phase_13-30","Phase_30-70","Phase_70-150","bary_euclidean_max","bary_euclidean_mean","cov_sq-GraphicalLasso","dsPLI_1-250","dsPLI_1-4","dsPLI_150-250","dsPLI_30-70","dsPLI_70-250","dswPLI_0-NYQ","dswPLI_13-30","dswPLI_4-8","dswPLI_70-150","dswPLI_8-13","iCoh_0-NYQ","iCoh_13-30","iCoh_4-8","iCoh_70-150","je_gaussian","pec_orth_log","pec_orth_log_abs","prec_sq-EmpiricalCovariance","prec_sq-GraphicalLasso","prec_sq-ShrunkCovariance","xcorr_mean","xcorr_sq-mean"]
+
+    # these are manually reviewed and "simplified" features
+    targets = ['iCoh_1-250', 'pdist_cosine', 'bary_euclidean_mean', 'Phase_1-250', 'pec_orth', 'pec_orth_log_abs']
 
     # remove any patients with only one value of soz_sum
     df = df[df.groupby('pid')['soz_sum'].transform('nunique') > 1]
@@ -142,7 +147,7 @@ def build_patient_graphs(csv_path: str,
 
 
 
-class NodeClassifierGNN(nn.Module):
+class NodeClassifierGNN_conv(nn.Module):
     def __init__(self,
                  edge_in_dim: int = 154,
                  hidden: int      = 32,
@@ -155,7 +160,7 @@ class NodeClassifierGNN(nn.Module):
         self.dropouts = nn.ModuleList()
 
         # input size of node feature is now 33*2+3 (from node_lbls)
-        in_channels = 33*2+3
+        in_channels = 6*2+3
         for _ in range(n_layers):
             edge_nn = nn.Sequential(
                 nn.Linear(edge_in_dim, hidden),
@@ -179,6 +184,36 @@ class NodeClassifierGNN(nn.Module):
         out = self.lin(x).squeeze(-1)           # (num_nodes,)
         return out                              # raw logits
 
+
+class NodeClassifierGNN_gat(nn.Module):
+    def __init__(self,
+                 in_channels: int,  # Change from edge_in_dim
+                 hidden: int      = 32,
+                 n_layers: int    = 2,
+                 dropout: float   = 0.2):
+        super().__init__()
+        self.convs = nn.ModuleList()
+        self.dropouts = nn.ModuleList()
+
+        for i in range(n_layers):
+            # GATConv doesn't use an edge MLP like NNConv
+            # It takes node feature dimensions as input/output
+            conv = GATConv(in_channels, hidden, heads=4) # Using 4 attention heads is a good start
+            self.convs.append(conv)
+            self.dropouts.append(nn.Dropout(dropout))
+            in_channels = hidden * 4 # The output dimension is hidden_dim * heads
+
+        # Adjust the final linear layer for the new input size
+        self.lin = nn.Linear(hidden * 4, 1)
+
+    def forward(self, data):
+        x, edge_index = data.x, data.edge_index # GATConv doesn't need edge_attr by default
+        for conv, dropout in zip(self.convs, self.dropouts):
+            x = conv(x, edge_index)
+            x = torch.relu(x)
+            x = dropout(x)
+        out = self.lin(x).squeeze(-1)
+        return out
 
 class FocalLoss(nn.Module):
     def __init__(self, alpha=0.25, gamma=2.0, reduction='mean'):
@@ -207,15 +242,15 @@ def train_model(train_graphs, val_graphs, test_graph, model, device, num_epochs=
     val_loader = DataLoader(val_graphs, batch_size=val_batch_size, shuffle=False)
     optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=weight_decay)
     # Focal loss for imbalance
-    all_labels = np.concatenate([data.y.cpu().numpy() for data in train_graphs])
-    all_labels = all_labels[all_labels >= 0]
-    # Calculate alpha as the proportion of the dataset that is the negative class
-    alpha = np.sum(all_labels == 0) / len(all_labels)
+    # all_labels = np.concatenate([data.y.cpu().numpy() for data in train_graphs])
+    # all_labels = all_labels[all_labels >= 0]
+    # # Calculate alpha as the proportion of the dataset that is the negative class
+    # alpha = np.sum(all_labels == 0) / len(all_labels)
 
     # Now use this calculated alpha
     # criterion = FocalLoss(alpha=alpha, gamma=.5, reduction='mean')
     
-
+    # ── binary cross entropy ──────────────────────────────────────────────────────
     all_labels = np.concatenate([data.y.cpu().numpy() for data in train_graphs])
     all_labels = all_labels[all_labels >= 0] # Filter out unknowns
     if np.sum(all_labels == 1) > 0:
@@ -314,7 +349,10 @@ def loo_crossval(graphs, device, edge_in_dim, hidden=32, n_layers=2, dropout=0.2
         else:
             train_fold_graphs = train_graphs
             val_fold_graphs = train_graphs
-        model = NodeClassifierGNN(edge_in_dim=edge_in_dim, hidden=hidden, n_layers=n_layers, dropout=dropout).to(device)
+        model = NodeClassifierGNN_conv(edge_in_dim=edge_in_dim, hidden=hidden, n_layers=n_layers, dropout=dropout).to(device)
+        # node_feature_dim = len(targets)*2 + 3 # Calculate this based on your new, smaller targets list
+        # model = NodeClassifierGNN_gat(in_channels=node_feature_dim, hidden=hidden, n_layers=n_layers, dropout=dropout).to(device)
+
         model = train_model(train_fold_graphs, val_fold_graphs, test_graph,model, device, num_epochs=num_epochs, patience=patience, lr=lr, weight_decay=weight_decay, train_batch_size=train_batch_size, val_batch_size=val_batch_size)
         model.eval()
         with torch.no_grad():
@@ -412,7 +450,7 @@ if __name__ == "__main__":
 
     # Hardcoded hyperparameters
     hidden = 64
-    n_layers = 2
+    n_layers = 3
     dropout = 0.4
     num_epochs = 100
     patience = 10

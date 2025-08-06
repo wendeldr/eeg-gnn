@@ -6,6 +6,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from collections import Counter
 import warnings
+from tsfresh.feature_selection.relevance import calculate_relevance_table
 
 # Suppress ConvergenceWarning for LogisticRegression
 warnings.filterwarnings("ignore", category=UserWarning)
@@ -124,7 +125,19 @@ def get_embedded_features(X, y, feature_names):
     print(f"  > Selected {len(selected_features)} features via L1 regularization.")
     return set(selected_features)
 
+# from tsfresh.examples.robot_execution_failures import download_robot_execution_failures, \
+#     load_robot_execution_failures
+# download_robot_execution_failures()
+# timeseries, y = load_robot_execution_failures()
 
+# from tsfresh import extract_features
+# extracted_features = extract_features(timeseries, column_id="id", column_sort="time")
+
+# from tsfresh import select_features
+# from tsfresh.utilities.dataframe_functions import impute
+
+# impute(extracted_features)
+# features_filtered = select_features(extracted_features, y, n_jobs = 1)
 
 # csv_path = "/media/dan/Data/data/renamed_mean_data.csv"
 
@@ -141,12 +154,16 @@ skip = ["pid","electrode_pair","electrode_a","electrode_b",
 
 targets = [c for c in df.columns if c not in skip]
 
+# targets = [c for c in targets if 'pec' in c]
+
 # fix nan, inf, and super large values
 # Use .loc to avoid SettingWithCopyWarning and combine masks
 inf_mask = (df[targets] > 1e200) | (df[targets] < -1e200)
 df.loc[:, targets] = df[targets].replace([np.inf, -np.inf], np.nan)
 df.loc[:, targets] = df[targets].mask(inf_mask, np.nan)
-df[targets] = df[targets].fillna(0)
+# make sure all targets are numeric
+df[targets] = df[targets].apply(pd.to_numeric, errors='coerce')
+df[targets] = df[targets].ffill()
 
 
 # Run selection pipeline
@@ -162,6 +179,15 @@ df_z[targets] = (df[targets] - group_means) / group_stds_replaced
 # replace nan with 0
 df_z[targets] = df_z[targets].fillna(0)
 y = df_z['soz_sum'].values
+
+# 0.5. tsfresh feature selection
+relevance_table = calculate_relevance_table(df_z[targets], df_z['soz_sum'], ml_task = "classification", multiclass=True, n_jobs = 32)
+
+print("removing non relevant features per tsfresh algorithm")
+removed_features = relevance_table[relevance_table['relevant']==False].index
+print(f"removed {len(removed_features)} of {len(targets)} features")
+
+targets = relevance_table[relevance_table['relevant']==True].index
 
 # 1. Pruning Stage
 pruned_features = remove_low_variance_features(df_z[targets])
